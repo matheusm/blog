@@ -1,12 +1,13 @@
-import commonStyles from '../../styles/common.module.scss';
+import Link from 'next/link';
 import styles from './header.module.scss';
 
 export default function Header(): JSX.Element {
-  // TO-DO: Logo redirect to home page.
   return (
     <header className={styles.headerContainer}>
       <div className={styles.headerContent}>
-        <img src="/images/LogoCompleted.svg" alt="Space Traveling Logo" />
+        <Link href="/">
+          <img src="/images/LogoCompleted.svg" alt="logo" />
+        </Link>
       </div>
     </header>
   );
