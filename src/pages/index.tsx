@@ -30,13 +30,52 @@ interface HomeProps {
 }
 
 export default function Home({ postsPagination }: HomeProps): JSX.Element {
+  const [posts, setPosts] = useState<Post[]>(postsPagination.results);
+  const [nextPage, setNextPage] = useState(postsPagination.next_page);
+
+  async function handleNewPosts(): Promise<void> {
+    const responseResultsData = await fetch(postsPagination.next_page);
+    const { results, next_page } = await responseResultsData.json();
+
+    const newPosts = results.map((post: Post) => {
+      return {
+        uid: post.uid,
+        first_publication_date: post.first_publication_date,
+        data: {
+          title: post.data.title,
+          subtitle: post.data.subtitle,
+          author: post.data.author,
+        },
+      };
+    });
+
+    setPosts([...posts, ...newPosts]);
+    setNextPage(next_page);
+  }
+
   return (
     <main className={commonStyles.container}>
       <div className={styles.posts}>
-        {postsPagination.results.map(post => (
-          <h1>{post.data.title}</h1>
+        {posts.map(post => (
+          <a key={post.uid}>
+            <h1>{post.data.title}</h1>
+            <p>{post.data.subtitle}</p>
+            <div className={commonStyles.info}>
+              <time>
+                <FiCalendar /> {formatDate(post.first_publication_date)}
+              </time>
+              <span>
+                <FiUser /> {post.data.author}
+              </span>
+            </div>
+          </a>
         ))}
       </div>
+      {nextPage && (
+        <button type="button" className={styles.btn} onClick={handleNewPosts}>
+          Carregar mais posts
+        </button>
+      )}
     </main>
   );
 }

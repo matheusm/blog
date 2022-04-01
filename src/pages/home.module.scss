@@ -28,3 +28,18 @@
     }
   }
 }
+
+.btn {
+  margin-top: 4rem;
+  font-weight: 600;
+  color: var(--highlight);
+  font-size: 1.125rem;
+  background-color: transparent;
+  border: none;
+
+  transition: 0.2s opacity;
+
+  &:hover {
+    opacity: 0.8;
+  }
+}
