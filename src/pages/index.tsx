@@ -1,4 +1,5 @@
 import { GetStaticProps } from 'next';
+import Link from 'next/link';
 import Prismic from '@prismicio/client';
 
 import { FiCalendar, FiUser } from 'react-icons/fi';
@@ -9,6 +10,7 @@ import { getPrismicClient } from '../services/prismic';
 import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
 import { formatDate } from '../utils/date';
+import Header from '../components/Header';
 
 interface Post {
   uid?: string;
@@ -54,29 +56,34 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
   }
 
   return (
-    <main className={commonStyles.container}>
-      <div className={styles.posts}>
-        {posts.map(post => (
-          <a key={post.uid}>
-            <h1>{post.data.title}</h1>
-            <p>{post.data.subtitle}</p>
-            <div className={commonStyles.info}>
-              <time>
-                <FiCalendar /> {formatDate(post.first_publication_date)}
-              </time>
-              <span>
-                <FiUser /> {post.data.author}
-              </span>
-            </div>
-          </a>
-        ))}
-      </div>
-      {nextPage && (
-        <button type="button" className={styles.btn} onClick={handleNewPosts}>
-          Carregar mais posts
-        </button>
-      )}
-    </main>
+    <>
+      <Header />
+      <main className={commonStyles.container}>
+        <div className={styles.posts}>
+          {posts.map(post => (
+            <Link key={post.uid} href={`/post/${post.uid}`}>
+              <a>
+                <h1>{post.data.title}</h1>
+                <p>{post.data.subtitle}</p>
+                <div className={commonStyles.info}>
+                  <time>
+                    <FiCalendar /> {formatDate(post.first_publication_date)}
+                  </time>
+                  <span>
+                    <FiUser /> {post.data.author}
+                  </span>
+                </div>
+              </a>
+            </Link>
+          ))}
+        </div>
+        {nextPage && (
+          <button type="button" className={styles.btn} onClick={handleNewPosts}>
+            Carregar mais posts
+          </button>
+        )}
+      </main>
+    </>
   );
 }
 

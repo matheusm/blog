@@ -3,7 +3,7 @@ import { Document } from '@prismicio/client/types/documents';
 import { getPrismicClient } from '../../services/prismic';
 
 function linkResolver(doc: Document): string {
-  if (doc.type === 'posts') {
+  if (doc.type === 'post') {
     return `/post/${doc.uid}`;
   }
   return '/';
