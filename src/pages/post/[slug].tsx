@@ -2,8 +2,9 @@ import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Prismic from '@prismicio/client';
 import { useRouter } from 'next/router';
-import { FiCalendar, FiUser } from 'react-icons/fi';
+import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import { RichText } from 'prismic-dom';
+import { useState } from 'react';
 import Header from '../../components/Header';
 
 import { getPrismicClient } from '../../services/prismic';
@@ -40,9 +41,23 @@ interface PostProps {
 
 export default function Post({ post }: PostProps): JSX.Element {
   const router = useRouter();
+
+  const countWords = post.data.content.reduce((acc, item) => {
+    acc += item.heading.split(' ').length;
+
+    const words = item.body.map(paragraph => paragraph.text.split(' ').length);
+
+    words.map(word => (acc += word));
+
+    return acc;
+  }, 0);
+
+  const time = Math.ceil(countWords / 200);
+
   if (router.isFallback) {
     return <h1>Carregando...</h1>;
   }
+
   return (
     <>
       <Head>
@@ -65,9 +80,13 @@ export default function Post({ post }: PostProps): JSX.Element {
               <span>
                 <FiUser /> {post.data.author}
               </span>
+
+              <span>
+                <FiClock /> {time} min
+              </span>
             </div>
-            {post.data.content.map(section => (
-              <div>
+            {post.data.content.map((section, index) => (
+              <div key={index}>
                 <h2>{section.heading}</h2>
                 <div
                   dangerouslySetInnerHTML={{
@@ -107,10 +126,12 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const prismic = getPrismicClient();
   const response = await prismic.getByUID('post', String(slug), {});
-  const post: Post = {
+  const post = {
+    uid: response.uid,
     first_publication_date: response.first_publication_date,
     data: {
       title: response.data.title,
+      subtitle: response.data.subtitle,
       author: response.data.author,
       banner: {
         url: response.data.banner.url,
@@ -123,6 +144,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
     props: {
       post,
     },
-    // revalidate: 60 * 60 * 24, // 1 day
+    revalidate: 60 * 60 * 24, // 1 day
   };
 };

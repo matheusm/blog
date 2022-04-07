@@ -20,7 +20,8 @@
   }
 
   time + span,
-  span + time {
+  span + time,
+  span + span {
     margin-left: 1.5rem;
   }
 }
