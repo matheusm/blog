@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { GetStaticPaths, GetStaticProps } from 'next';
 import Head from 'next/head';
 import Prismic from '@prismicio/client';
@@ -46,6 +47,7 @@ export default function Post({ post }: PostProps): JSX.Element {
 
     const words = item.body.map(paragraph => paragraph.text.split(' ').length);
 
+    // eslint-disable-next-line no-return-assign
     words.map(word => (acc += word));
 
     return acc;
@@ -92,7 +94,7 @@ export default function Post({ post }: PostProps): JSX.Element {
             </div>
             <div className={styles.postContent}>
               {post.data.content.map((section, index) => (
-                <div key={index}>
+                <div key={Number(index)}>
                   <h2>{section.heading}</h2>
                   <div
                     dangerouslySetInnerHTML={{
