@@ -4,7 +4,6 @@ import Prismic from '@prismicio/client';
 import { useRouter } from 'next/router';
 import { FiCalendar, FiUser, FiClock } from 'react-icons/fi';
 import { RichText } from 'prismic-dom';
-import { useState } from 'react';
 import Header from '../../components/Header';
 
 import { getPrismicClient } from '../../services/prismic';
@@ -68,9 +67,15 @@ export default function Post({ post }: PostProps): JSX.Element {
 
       <main>
         <article>
-          {post.data.banner?.url && <img src={post.data.banner.url} alt="" />}
+          {post.data.banner?.url && (
+            <img
+              src={post.data.banner.url}
+              className={styles.banner}
+              alt={post.data.title}
+            />
+          )}
 
-          <div className={commonStyles.container}>
+          <div className={`${commonStyles.container} ${styles.post}`}>
             <h1>{post.data.title}</h1>
             <div className={commonStyles.info}>
               <time>
@@ -85,16 +90,18 @@ export default function Post({ post }: PostProps): JSX.Element {
                 <FiClock /> {time} min
               </span>
             </div>
-            {post.data.content.map((section, index) => (
-              <div key={index}>
-                <h2>{section.heading}</h2>
-                <div
-                  dangerouslySetInnerHTML={{
-                    __html: RichText.asHtml(section.body),
-                  }}
-                />
-              </div>
-            ))}
+            <div className={styles.postContent}>
+              {post.data.content.map((section, index) => (
+                <div key={index}>
+                  <h2>{section.heading}</h2>
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: RichText.asHtml(section.body),
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         </article>
       </main>
